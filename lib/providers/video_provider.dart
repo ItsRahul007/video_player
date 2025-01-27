@@ -59,8 +59,10 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
     try {
       // Get the root directory of the device
       Directory rootDir = Directory('/storage/emulated/0');
-      final videos = await _scanDirectory(rootDir);
-      state = state.copyWith(videoFiles: videos);
+      Map<String, Folders> foldersMap = {};
+      await _scanDirectory(rootDir, foldersMap);
+      List<Folders> foldersList = foldersMap.values.toList();
+      state = state.copyWith(videoFolders: foldersList);
     } catch (e) {
       print('Error fetching videos: $e');
     }
@@ -68,15 +70,15 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
     state = state.copyWith(isLoading: false);
   }
 
-  Future<List<VideoFile>> _scanDirectory(Directory directory) async {
-    List<VideoFile> videoFiles = [];
+  Future<void> _scanDirectory(
+      Directory directory, Map<String, Folders> foldersMap) async {
     try {
       List<FileSystemEntity> entities = directory.listSync();
       for (var entity in entities) {
         if (entity is Directory) {
           if (!entity.path.contains('/Android/') &&
               !entity.path.split('/').last.startsWith('.')) {
-            videoFiles.addAll(await _scanDirectory(entity));
+            await _scanDirectory(entity, foldersMap);
           }
         } else if (entity is File) {
           String path = entity.path.toLowerCase();
@@ -90,15 +92,21 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
                 name: path.split("/").last,
                 modified: entity.lastModifiedSync());
 
-            videoFiles.add(video);
-            debugPrint("video path: $path");
+            String directoryPath = entity.parent.path;
+            if (!foldersMap.containsKey(directoryPath)) {
+              foldersMap[directoryPath] = Folders(
+                  folderName: directoryPath.split("/").last,
+                  folderPath: directoryPath,
+                  videoFiles: []);
+            }
+            foldersMap[directoryPath]!.videoFiles.add(video);
+            state = state.copyWith(videoFiles: [...state.videoFiles, video]);
           }
         }
       }
     } catch (e) {
       debugPrint('Skipping directory: ${directory.path}');
     }
-    return videoFiles;
   }
 
   void init() async {

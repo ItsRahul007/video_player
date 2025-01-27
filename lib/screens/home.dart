@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         flexibleSpace: ComonBg(),
         title: TextWidget(
-          text: "Videos",
+          text: _currentIndex == 0 ? "All Videos" : "Folders",
           fontSize: 25.sp,
           fontWeight: FontWeight.bold,
         ),

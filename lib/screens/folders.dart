@@ -1,27 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:video_player/providers/permission_provider.dart';
+import 'package:video_player/providers/video_provider.dart';
 import 'package:video_player/screens/folder_videos.dart';
 import 'package:video_player/widgets/text.dart';
 
-class Folders extends StatelessWidget {
+class Folders extends ConsumerStatefulWidget {
   const Folders({super.key});
 
   @override
+  ConsumerState<Folders> createState() => _FoldersState();
+}
+
+class _FoldersState extends ConsumerState<Folders> {
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _folders(context, "Camera", 6),
-        _folders(context, "Download", 10),
-        _folders(context, "WhatsApp", 200),
-      ],
-    );
+    final permission = ref.watch(permissionProvider);
+    final videos = ref.read(videoProvider);
+
+    if (permission.isLoading || videos.isLoading) {
+      return CircularProgressIndicator();
+    }
+
+    if (!permission.havePermission) {
+      return Center(
+        child: TextButton(
+            onPressed: () {
+              ref.read(permissionProvider.notifier).manualRequestPermission();
+            },
+            child: TextWidget(text: "Give Permission")),
+      );
+    }
+
+    debugPrint("folders: ${videos.videoFolders.length}");
+
+    return ListView.builder(
+        itemBuilder: (context, index) => _folders(
+            context,
+            videos.videoFolders[index].folderName,
+            videos.videoFolders[index].videoFiles.length,
+            index),
+        itemCount: videos.videoFolders.length);
   }
 
-  Widget _folders(BuildContext context, String name, int videoCount) {
+  Widget _folders(
+      BuildContext context, String name, int videoCount, int index) {
     //? if there are more than 100 videos
     final String count = videoCount >= 100 ? "99+" : videoCount.toString();
 
-    //TODO: if we click on any folder then show a dialogue where we will show case all the videos
     void onFolderClick() {
       showDialog(
         context: context,
@@ -34,6 +61,7 @@ class Folders extends StatelessWidget {
           ),
           child: FolderVideos(
             folderName: name,
+            index: index,
           ),
         ),
       );
