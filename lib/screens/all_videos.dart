@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/constants/widget_list.dart';
 import 'package:video_player/providers/permission_provider.dart';
+import 'package:video_player/providers/video_provider.dart';
 import 'package:video_player/widgets/single_video_file.dart';
+import 'package:video_player/widgets/text.dart';
 
 class AllVideos extends ConsumerStatefulWidget {
   const AllVideos({super.key});
@@ -14,9 +17,12 @@ class _AllVideosState extends ConsumerState<AllVideos> {
   @override
   void initState() {
     Future(() async {
-      final permission = ref.watch(permissionProvider);
-      if (!permission.havePermission) {
+      final permission =
+          await ref.read(permissionProvider.notifier).checkAudioPermissions();
+      if (!permission) {
         ref.read(permissionProvider.notifier).manualRequestPermission();
+      } else {
+        ref.read(videoProvider.notifier).getAllVideos();
       }
     });
     super.initState();
@@ -24,21 +30,30 @@ class _AllVideosState extends ConsumerState<AllVideos> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SingleVideoFile(
-          name: "hehe",
-          date: "12 Jan",
-        ),
-        SingleVideoFile(
-          name: "New video",
-          date: "2 Jan",
-        ),
-        SingleVideoFile(
-          name: "Yoyo bantai",
-          date: "12 Dec",
-        ),
-      ],
+    final permission = ref.watch(permissionProvider);
+    final videos = ref.read(videoProvider);
+
+    if (permission.isLoading || videos.isLoading) {
+      return CircularProgressIndicator();
+    }
+
+    if (!permission.havePermission) {
+      return Center(
+        child: TextButton(
+            onPressed: () {
+              ref.read(permissionProvider.notifier).manualRequestPermission();
+            },
+            child: TextWidget(text: "Give Permission")),
+      );
+    }
+
+    return ListView.builder(
+      itemBuilder: (context, index) => SingleVideoFile(
+        date:
+            "${videos.videoFiles[index].modified.day} ${monthAbbreviations[videos.videoFiles[index].modified.month - 1]}",
+        name: videos.videoFiles[index].name,
+      ),
+      itemCount: videos.videoFiles.length,
     );
   }
 }
