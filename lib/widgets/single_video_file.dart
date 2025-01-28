@@ -1,18 +1,50 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_thumbnail_video/index.dart';
 import 'package:video_player/widgets/text.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 
+// ignore: must_be_immutable
 class SingleVideoFile extends StatefulWidget {
   final String name;
   final String date;
+  final String path;
 
-  const SingleVideoFile({super.key, required this.name, required this.date});
+  const SingleVideoFile({
+    super.key,
+    required this.name,
+    required this.date,
+    required this.path,
+  });
 
   @override
   State<SingleVideoFile> createState() => _SingleVideoFileState();
 }
 
 class _SingleVideoFileState extends State<SingleVideoFile> {
+  Uint8List? myThumbnail;
+
+  @override
+  void initState() {
+    super.initState();
+    _getVideoThumbnail(widget.path);
+  }
+
+  Future<void> _getVideoThumbnail(String path) async {
+    final uint8list = await VideoThumbnail.thumbnailData(
+      video: path,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth: 128,
+      quality: 25,
+    );
+
+    setState(() {
+      myThumbnail = uint8list;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -34,8 +66,11 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
                     width: 100.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5).r,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
+                    child: myThumbnail != null
+                        ? Image.memory(myThumbnail!)
+                        : SizedBox(),
                   ),
                   const SizedBox(
                     width: 10,

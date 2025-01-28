@@ -34,7 +34,7 @@ class _AllVideosState extends ConsumerState<AllVideos> {
     final videos = ref.read(videoProvider);
 
     if (permission.isLoading || videos.isLoading) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     }
 
     if (!permission.havePermission) {
@@ -52,6 +52,7 @@ class _AllVideosState extends ConsumerState<AllVideos> {
         date:
             "${videos.videoFiles[index].modified.day} ${monthAbbreviations[videos.videoFiles[index].modified.month - 1]}",
         name: videos.videoFiles[index].name,
+        path: videos.videoFiles[index].path,
       ),
       itemCount: videos.videoFiles.length,
     );

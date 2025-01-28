@@ -41,6 +41,7 @@ class _FolderVideosState extends ConsumerState<FolderVideos> {
 
             return SingleVideoFile(
               name: video.name,
+              path: video.path,
               date:
                   "${video.modified.day} ${monthAbbreviations[video.modified.month - 1]}",
             );

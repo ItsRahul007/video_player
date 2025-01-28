@@ -20,7 +20,7 @@ class _FoldersState extends ConsumerState<Folders> {
     final videos = ref.read(videoProvider);
 
     if (permission.isLoading || videos.isLoading) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     }
 
     if (!permission.havePermission) {
