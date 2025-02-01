@@ -89,7 +89,6 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
       state = state.copyWith(
         videoFolders: foldersList,
         videoFiles: allVideos,
-        isLoading: false,
       );
     } catch (e) {
       print('Error fetching videos: $e');

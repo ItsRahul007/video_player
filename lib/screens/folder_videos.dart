@@ -29,7 +29,7 @@ class _FolderVideosState extends ConsumerState<FolderVideos> {
       if (!permission) {
         ref.read(permissionProvider.notifier).manualRequestPermission();
       } else {
-        ref.read(videoProvider.notifier).init();
+        await ref.read(videoProvider.notifier).getAllVideos();
       }
     });
     super.initState();

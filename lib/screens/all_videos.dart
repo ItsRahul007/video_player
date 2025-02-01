@@ -23,7 +23,7 @@ class _AllVideosState extends ConsumerState<AllVideos> {
       if (!permission) {
         ref.read(permissionProvider.notifier).manualRequestPermission();
       } else {
-        ref.read(videoProvider.notifier).init();
+        await ref.read(videoProvider.notifier).getAllVideos();
       }
     });
     super.initState();
