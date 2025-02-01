@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:video_player/widgets/play_video.dart';
 import 'package:video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
@@ -84,7 +85,9 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
       padding: const EdgeInsets.all(8.0).r,
       child: InkWell(
         onTap: () {
-          //TODO: play the video when tapped
+          showDialog(
+              context: context,
+              builder: (context) => PlayVideo(path: widget.path));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
