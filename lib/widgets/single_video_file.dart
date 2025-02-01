@@ -1,8 +1,9 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_thumbnail_video/index.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
@@ -24,7 +25,7 @@ class SingleVideoFile extends StatefulWidget {
 }
 
 class _SingleVideoFileState extends State<SingleVideoFile> {
-  Uint8List? myThumbnail;
+  File? myThumbnail;
 
   @override
   void initState() {
@@ -33,6 +34,34 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
   }
 
   Future<void> _getVideoThumbnail(String path) async {
+    try {
+      final Directory appDir = await getTemporaryDirectory();
+      final String imagePath =
+          "${appDir.path}/${widget.name.split(" ").join("_")}.jpeg";
+      final File imageFile = File(imagePath);
+
+      //! Check if file exists and is a valid image
+      if (await imageFile.exists()) {
+        try {
+          //? Decode the image to verify it's valid
+          await decodeImageFromList(await imageFile.readAsBytes());
+          setState(() {
+            myThumbnail = imageFile;
+          });
+        } catch (e) {
+          //? If image is invalid, proceed to regenerate
+          await _generateThumbnail(path, imageFile);
+        }
+      } else {
+        //? File doesn't exist, generate thumbnail
+        await _generateThumbnail(path, imageFile);
+      }
+    } catch (e) {
+      print('Error handling thumbnail: $e');
+    }
+  }
+
+  Future<void> _generateThumbnail(String path, File imageFile) async {
     final uint8list = await VideoThumbnail.thumbnailData(
       video: path,
       imageFormat: ImageFormat.JPEG,
@@ -40,9 +69,13 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
       quality: 25,
     );
 
-    setState(() {
-      myThumbnail = uint8list;
-    });
+    // ignore: unnecessary_null_comparison
+    if (uint8list != null) {
+      final File file = await imageFile.writeAsBytes(uint8list);
+      setState(() {
+        myThumbnail = file;
+      });
+    }
   }
 
   @override
@@ -66,10 +99,10 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
                     width: 100.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5).r,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                     child: myThumbnail != null
-                        ? Image.memory(myThumbnail!)
+                        ? Image.file(myThumbnail!)
                         : SizedBox(),
                   ),
                   const SizedBox(
