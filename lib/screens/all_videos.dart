@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/constants/widget_list.dart';
 import 'package:video_player/providers/permission_provider.dart';
 import 'package:video_player/providers/video_provider.dart';
+import 'package:video_player/widgets/no_videos.dart';
 import 'package:video_player/widgets/single_video_file.dart';
 import 'package:video_player/widgets/text.dart';
 
@@ -22,7 +23,7 @@ class _AllVideosState extends ConsumerState<AllVideos> {
       if (!permission) {
         ref.read(permissionProvider.notifier).manualRequestPermission();
       } else {
-        ref.read(videoProvider.notifier).getAllVideos();
+        ref.read(videoProvider.notifier).init();
       }
     });
     super.initState();
@@ -31,10 +32,17 @@ class _AllVideosState extends ConsumerState<AllVideos> {
   @override
   Widget build(BuildContext context) {
     final permission = ref.watch(permissionProvider);
-    final videos = ref.read(videoProvider);
+    final videos = ref.watch(videoProvider);
 
     if (permission.isLoading || videos.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return Center(
+          child: CircularProgressIndicator(
+        color: Colors.white,
+      ));
+    }
+
+    if (videos.videoFiles.isEmpty) {
+      return NoVideos();
     }
 
     if (!permission.havePermission) {

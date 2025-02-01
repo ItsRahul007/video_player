@@ -1,4 +1,4 @@
-package com.example.video_player
+package com.rahulka.video_player
 
 import io.flutter.embedding.android.FlutterActivity
 

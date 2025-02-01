@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/constants/widget_list.dart';
+import 'package:video_player/providers/permission_provider.dart';
 import 'package:video_player/providers/video_provider.dart';
 import 'package:video_player/widgets/comon_bg.dart';
+import 'package:video_player/widgets/no_videos.dart';
 import 'package:video_player/widgets/single_video_file.dart';
 import 'package:video_player/widgets/text.dart';
 
@@ -20,8 +22,31 @@ class FolderVideos extends ConsumerStatefulWidget {
 
 class _FolderVideosState extends ConsumerState<FolderVideos> {
   @override
+  void initState() {
+    Future(() async {
+      final permission =
+          await ref.read(permissionProvider.notifier).checkAudioPermissions();
+      if (!permission) {
+        ref.read(permissionProvider.notifier).manualRequestPermission();
+      } else {
+        ref.read(videoProvider.notifier).init();
+      }
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final videos = ref.read(videoProvider);
+    final permission = ref.watch(permissionProvider);
+    final videos = ref.watch(videoProvider);
+
+    if (permission.isLoading || videos.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (videos.videoFiles.isEmpty) {
+      return NoVideos();
+    }
 
     return Scaffold(
       appBar: AppBar(

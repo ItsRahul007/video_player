@@ -153,7 +153,5 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
 
 final videoProvider =
     StateNotifierProvider<VideoProvider, VideoProviderState>((ref) {
-  final controller = VideoProvider();
-  controller.init();
-  return controller;
+  return VideoProvider();
 });
