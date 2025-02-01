@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_player/widgets/play_video.dart';
+import 'package:video_player/screens/play_video.dart';
 import 'package:video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
@@ -87,7 +87,18 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
         onTap: () {
           showDialog(
               context: context,
-              builder: (context) => PlayVideo(path: widget.path));
+              builder: (context) => Theme(
+                    data: ThemeData(
+                      appBarTheme: const AppBarTheme(
+                        iconTheme: IconThemeData(
+                            color: Colors.white), // Set your desired color here
+                      ),
+                    ),
+                    child: PlayVideo(
+                      path: widget.path,
+                      name: widget.name,
+                    ),
+                  ));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
