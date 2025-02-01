@@ -28,7 +28,7 @@ class PermissionProvider extends StateNotifier<PermissionState> {
           havePermission: false,
         ));
 
-  Future<void> manualRequestPermission() async {
+  Future<bool> manualRequestPermission() async {
     state = state.copyWith(isLoading: true);
 
     PermissionStatus manageExternalStorageStatus =
@@ -39,7 +39,8 @@ class PermissionProvider extends StateNotifier<PermissionState> {
       manageExternalStorageStatus =
           await Permission.manageExternalStorage.status;
       if (manageExternalStorageStatus.isGranted) {
-        state = state.copyWith(havePermission: true);
+        state = state.copyWith(havePermission: true, isLoading: false);
+        return true;
       }
     } else {
       //? Request permissions once again
@@ -47,13 +48,14 @@ class PermissionProvider extends StateNotifier<PermissionState> {
           await Permission.manageExternalStorage.request();
 
       if (requestPermission.isGranted) {
-        state = state.copyWith(havePermission: true);
+        state = state.copyWith(havePermission: true, isLoading: false);
+        return true;
       } else {
-        state = state.copyWith(havePermission: false);
+        state = state.copyWith(havePermission: false, isLoading: false);
+        return false;
       }
     }
-
-    state = state.copyWith(isLoading: false);
+    return false;
   }
 
   Future<bool> checkAudioPermissions() async {

@@ -89,11 +89,12 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
       state = state.copyWith(
         videoFolders: foldersList,
         videoFiles: allVideos,
+        isLoading: false,
       );
     } catch (e) {
       print('Error fetching videos: $e');
+      state = state.copyWith(isLoading: false);
     }
-    state = state.copyWith(isLoading: false);
   }
 
   Future<void> _scanDirectory(
@@ -143,10 +144,6 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
     } catch (e) {
       debugPrint('Skipping directory: ${directory.path}');
     }
-  }
-
-  void init() async {
-    await getAllVideos();
   }
 }
 

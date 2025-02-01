@@ -559,10 +559,9 @@ packages:
   wakelock_plus:
     dependency: transitive
     description:
-      name: wakelock_plus
-      sha256: "36c88af0b930121941345306d259ec4cc4ecca3b151c02e3a9e71aede83c615e"
-      url: "https://pub.dev"
-    source: hosted
+      path: "better_player/wakelock_plus"
+      relative: true
+    source: path
     version: "1.2.10"
   wakelock_plus_platform_interface:
     dependency: transitive

@@ -23,16 +23,22 @@ class FolderVideos extends ConsumerStatefulWidget {
 class _FolderVideosState extends ConsumerState<FolderVideos> {
   @override
   void initState() {
-    Future(() async {
-      final permission =
-          await ref.read(permissionProvider.notifier).checkAudioPermissions();
-      if (!permission) {
-        ref.read(permissionProvider.notifier).manualRequestPermission();
-      } else {
+    _init();
+    super.initState();
+  }
+
+  void _init() async {
+    final permission =
+        await ref.read(permissionProvider.notifier).checkAudioPermissions();
+    if (!permission) {
+      final bool isPermissionGranted =
+          await ref.read(permissionProvider.notifier).manualRequestPermission();
+      if (isPermissionGranted) {
         await ref.read(videoProvider.notifier).getAllVideos();
       }
-    });
-    super.initState();
+    } else {
+      await ref.read(videoProvider.notifier).getAllVideos();
+    }
   }
 
   @override
