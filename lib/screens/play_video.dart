@@ -19,13 +19,10 @@ class _PlayVideoState extends State<PlayVideo> {
   final BetterPlayerConfiguration _betterPlayerConfiguration =
       BetterPlayerConfiguration(
     fit: BoxFit.contain,
-    autoDetectFullscreenDeviceOrientation: true,
     autoPlay: true,
-    autoDetectFullscreenAspectRatio: true,
     fullScreenByDefault: true,
+    allowedScreenSleep: false, // Prevent screen from sleeping
     controlsConfiguration: BetterPlayerControlsConfiguration(
-      controlsHideTime: const Duration(milliseconds: 300),
-      controlBarHeight: 80.h,
       playerTheme: BetterPlayerTheme.custom,
       customControlsBuilder: (controller, onPlayerVisibilityChanged) =>
           CustomControls(
@@ -33,7 +30,6 @@ class _PlayVideoState extends State<PlayVideo> {
         onControlsVisibilityChanged: onPlayerVisibilityChanged,
       ),
     ),
-    // controlsConfiguration:
   );
 
   @override

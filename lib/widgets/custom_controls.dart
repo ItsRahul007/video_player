@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:video_player/constants/widget_list.dart';
 
 class CustomControls extends StatefulWidget {
   final BetterPlayerController controller;
@@ -22,11 +23,14 @@ class _CustomControlsState extends State<CustomControls> {
   bool isPlaying = true;
   bool _controlsVisible = true;
   Timer? _hideTimer;
+  Timer? _positionUpdateTimer;
+  Duration _currentPosition = Duration.zero;
 
   @override
   void initState() {
     super.initState();
     _startHideTimer();
+    _startPositionUpdateTimer();
   }
 
   void setIsPlaying(bool value) {
@@ -42,6 +46,19 @@ class _CustomControlsState extends State<CustomControls> {
         setState(() {
           _controlsVisible = false;
           widget.onControlsVisibilityChanged?.call(false);
+        });
+      }
+    });
+  }
+
+  void _startPositionUpdateTimer() {
+    _positionUpdateTimer?.cancel();
+    _positionUpdateTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          _currentPosition =
+              widget.controller.videoPlayerController?.value.position ??
+                  Duration.zero;
         });
       }
     });
@@ -99,6 +116,7 @@ class _CustomControlsState extends State<CustomControls> {
                             if (isPlaying) {
                               widget.controller.pause();
                               setIsPlaying(false);
+                              _handleTap();
                             } else {
                               widget.controller.play();
                               setIsPlaying(true);
@@ -117,7 +135,7 @@ class _CustomControlsState extends State<CustomControls> {
                   left: 0,
                   right: 0,
                   child: Container(
-                    padding: EdgeInsets.only(bottom: 16).r,
+                    padding: EdgeInsets.only(top: 18).r,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -131,9 +149,6 @@ class _CustomControlsState extends State<CustomControls> {
                     child: StreamBuilder(
                       stream: widget.controller.controllerEventStream,
                       builder: (context, snapshot) {
-                        final position = widget.controller.videoPlayerController
-                                ?.value.position ??
-                            Duration.zero;
                         final duration = widget.controller.videoPlayerController
                                 ?.value.duration ??
                             Duration.zero;
@@ -143,7 +158,7 @@ class _CustomControlsState extends State<CustomControls> {
                           children: [
                             // Progress Slider
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16).r,
+                              padding: EdgeInsets.symmetric(horizontal: 8).r,
                               child: SliderTheme(
                                 data: SliderThemeData(
                                   thumbColor: Colors.white,
@@ -155,7 +170,8 @@ class _CustomControlsState extends State<CustomControls> {
                                   trackHeight: 3,
                                 ),
                                 child: Slider(
-                                  value: position.inMilliseconds.toDouble(),
+                                  value: _currentPosition.inMilliseconds
+                                      .toDouble(),
                                   max: duration.inMilliseconds.toDouble(),
                                   onChanged: (value) {
                                     widget.controller.seekTo(
@@ -175,7 +191,7 @@ class _CustomControlsState extends State<CustomControls> {
                                 children: [
                                   // Time Display
                                   Text(
-                                    '${_formatDuration(position)} / ${_formatDuration(duration)}',
+                                    '${_formatDuration(_currentPosition)} / ${_formatDuration(duration)}',
                                     style: TextStyle(color: Colors.white),
                                   ),
 
@@ -230,18 +246,20 @@ class _CustomControlsState extends State<CustomControls> {
       builder: (context) {
         return AlertDialog(
           title: Text('Playback Speed'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (double speed in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0])
-                ListTile(
-                  title: Text('${speed}x'),
-                  onTap: () {
-                    widget.controller.setSpeed(speed);
-                    Navigator.pop(context);
-                  },
-                ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (double speed in speedList)
+                  ListTile(
+                    title: Text('${speed}x'),
+                    onTap: () {
+                      widget.controller.setSpeed(speed);
+                      Navigator.pop(context);
+                    },
+                  ),
+              ],
+            ),
           ),
         );
       },
@@ -251,6 +269,7 @@ class _CustomControlsState extends State<CustomControls> {
   @override
   void dispose() {
     _hideTimer?.cancel();
+    _positionUpdateTimer?.cancel();
     super.dispose();
   }
 }
