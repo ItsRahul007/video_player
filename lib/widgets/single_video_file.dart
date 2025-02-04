@@ -8,7 +8,6 @@ import 'package:video_player/screens/play_video.dart';
 import 'package:video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
-// ignore: must_be_immutable
 class SingleVideoFile extends StatefulWidget {
   final String name;
   final String date;
@@ -162,5 +161,10 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

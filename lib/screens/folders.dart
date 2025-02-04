@@ -6,16 +6,11 @@ import 'package:video_player/providers/video_provider.dart';
 import 'package:video_player/screens/folder_videos.dart';
 import 'package:video_player/widgets/text.dart';
 
-class Folders extends ConsumerStatefulWidget {
+class Folders extends ConsumerWidget {
   const Folders({super.key});
 
   @override
-  ConsumerState<Folders> createState() => _FoldersState();
-}
-
-class _FoldersState extends ConsumerState<Folders> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final permission = ref.watch(permissionProvider);
     final videos = ref.read(videoProvider);
 

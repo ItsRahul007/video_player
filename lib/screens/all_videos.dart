@@ -71,4 +71,9 @@ class _AllVideosState extends ConsumerState<AllVideos> {
       itemCount: videos.videoFiles.length,
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

@@ -245,7 +245,7 @@ class _CustomControlsState extends State<CustomControls> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Playback Speed'),
+          title: const Text('Playback Speed'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,

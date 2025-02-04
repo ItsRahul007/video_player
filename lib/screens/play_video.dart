@@ -52,33 +52,36 @@ class _PlayVideoState extends State<PlayVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            flexibleSpace: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.black,
-            ),
-            elevation: 5,
-            title: TextWidget(
-              text: widget.name,
-              fontSize: 15.sp,
-              fontWeight: FontWeight.bold,
-              maxLines: 2,
-            ),
-          ),
-          body: Container(
+    return Scaffold(
+        appBar: AppBar(
+          flexibleSpace: Container(
             width: double.infinity,
             height: double.infinity,
             color: Colors.black,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0).r,
-              child: BetterPlayer(
-                controller: _betterPlayerController,
-              ),
+          ),
+          elevation: 5,
+          title: TextWidget(
+            text: widget.name,
+            fontSize: 15.sp,
+            fontWeight: FontWeight.bold,
+            maxLines: 2,
+          ),
+        ),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0).r,
+            child: BetterPlayer(
+              controller: _betterPlayerController,
             ),
-          )),
-    );
+          ),
+        ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
