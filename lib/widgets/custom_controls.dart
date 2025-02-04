@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:video_player/constants/widget_list.dart';
+import 'package:local_video_player/constants/widget_list.dart';
 
 class CustomControls extends StatefulWidget {
   final BetterPlayerController controller;

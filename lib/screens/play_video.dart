@@ -1,8 +1,8 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:video_player/widgets/custom_controls.dart';
-import 'package:video_player/widgets/text.dart';
+import 'package:local_video_player/widgets/custom_controls.dart';
+import 'package:local_video_player/widgets/text.dart';
 
 class PlayVideo extends StatefulWidget {
   const PlayVideo({super.key, required this.path, required this.name});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/constants/colors.dart';
+import 'package:local_video_player/constants/colors.dart';
 
 class ComonBg extends StatelessWidget {
   final Widget? child;

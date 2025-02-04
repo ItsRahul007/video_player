@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:video_player/constants/widget_list.dart';
-import 'package:video_player/widgets/comon_bg.dart';
-import 'package:video_player/widgets/text.dart';
+import 'package:local_video_player/constants/widget_list.dart';
+import 'package:local_video_player/widgets/comon_bg.dart';
+import 'package:local_video_player/widgets/text.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

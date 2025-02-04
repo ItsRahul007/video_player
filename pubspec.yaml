@@ -1,4 +1,4 @@
-name: video_player
+name: local_video_player
 description: "A new Flutter project."
 
 publish_to: "none"
@@ -21,6 +21,7 @@ dependencies:
   path_provider: ^2.1.5
   better_player:
     path: ./better_player
+  video_player: ^2.9.2
 
 dev_dependencies:
   flutter_test:

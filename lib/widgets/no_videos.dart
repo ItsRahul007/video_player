@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:video_player/providers/video_provider.dart';
-import 'package:video_player/widgets/text.dart';
+import 'package:local_video_player/providers/video_provider.dart';
+import 'package:local_video_player/widgets/text.dart';
 
 class NoVideos extends ConsumerWidget {
   const NoVideos({super.key});

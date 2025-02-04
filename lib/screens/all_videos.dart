@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:video_player/constants/widget_list.dart';
-import 'package:video_player/providers/permission_provider.dart';
-import 'package:video_player/providers/video_provider.dart';
-import 'package:video_player/widgets/no_videos.dart';
-import 'package:video_player/widgets/single_video_file.dart';
-import 'package:video_player/widgets/text.dart';
+import 'package:local_video_player/constants/widget_list.dart';
+import 'package:local_video_player/providers/permission_provider.dart';
+import 'package:local_video_player/providers/video_provider.dart';
+import 'package:local_video_player/widgets/no_videos.dart';
+import 'package:local_video_player/widgets/single_video_file.dart';
+import 'package:local_video_player/widgets/text.dart';
 
 class AllVideos extends ConsumerStatefulWidget {
   const AllVideos({super.key});

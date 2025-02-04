@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_thumbnail_video/index.dart';
+import 'package:local_video_player/test_new_video_player/testing_video_player/test_video_player.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_player/screens/play_video.dart';
-import 'package:video_player/widgets/text.dart';
+import 'package:local_video_player/screens/play_video.dart';
+import 'package:local_video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
 class SingleVideoFile extends StatefulWidget {
@@ -93,7 +94,7 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
                             color: Colors.white), // Set your desired color here
                       ),
                     ),
-                    child: PlayVideo(
+                    child: TestVideoPlayer(
                       path: widget.path,
                       name: widget.name,
                     ),
