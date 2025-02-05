@@ -25,13 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  better_player:
-    dependency: "direct main"
-    description:
-      path: better_player
-      relative: true
-    source: path
-    version: "0.0.84"
   boolean_selector:
     dependency: transitive
     description:
@@ -56,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  chewie:
+    dependency: "direct main"
+    description:
+      name: chewie
+      sha256: "645fbca3f22309381edb5af59a4c8aa544a3d3872d7b7b7c986c2b18b3bdd265"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.0"
   cli_util:
     dependency: transitive
     description:
@@ -183,14 +184,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_widget_from_html_core:
-    dependency: transitive
-    description:
-      name: flutter_widget_from_html_core
-      sha256: b1048fd119a14762e2361bd057da608148a895477846d6149109b2151d2f7abf
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.15.2"
   get_thumbnail_video:
     dependency: "direct main"
     description:
@@ -271,14 +264,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
-  logging:
-    dependency: transitive
-    description:
-      name: logging
-      sha256: c8245ada5f1717ed44271ed1c26b8ce85ca3228fd2ffdb75468ab01979309d61
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.0"
   matcher:
     dependency: transitive
     description:
@@ -303,6 +288,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   package_info_plus:
     dependency: transitive
     description:
@@ -455,6 +448,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.1"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.2"
   riverpod:
     dependency: transitive
     description:
@@ -580,14 +581,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.4"
-  visibility_detector:
-    dependency: transitive
-    description:
-      name: visibility_detector
-      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:
@@ -599,9 +592,10 @@ packages:
   wakelock_plus:
     dependency: transitive
     description:
-      path: "better_player/wakelock_plus"
-      relative: true
-    source: path
+      name: wakelock_plus
+      sha256: "36c88af0b930121941345306d259ec4cc4ecca3b151c02e3a9e71aede83c615e"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.2.10"
   wakelock_plus_platform_interface:
     dependency: transitive

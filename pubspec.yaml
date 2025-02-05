@@ -19,9 +19,12 @@ dependencies:
   flutter_screenutil: ^5.9.3
   get_thumbnail_video: ^0.7.3
   path_provider: ^2.1.5
-  better_player:
-    path: ./better_player
+  # better_player:
+  #   path: ./better_player
+  # wakelock_plus:
+  #   path: ./wakelock_plus
   video_player: ^2.9.2
+  chewie: ^1.10.0
 
 dev_dependencies:
   flutter_test:
