@@ -28,8 +28,6 @@ class Folders extends ConsumerWidget {
       );
     }
 
-    debugPrint("folders: ${videos.videoFolders.length}");
-
     return ListView.builder(
         itemBuilder: (context, index) => _folders(
             context,
@@ -45,18 +43,21 @@ class Folders extends ConsumerWidget {
     final String count = videoCount >= 100 ? "99+" : videoCount.toString();
 
     void onFolderClick() {
-      showDialog(
-        context: context,
-        builder: (context) => Theme(
-          data: ThemeData(
-            appBarTheme: const AppBarTheme(
-              iconTheme: IconThemeData(
-                  color: Colors.white), // Set your desired color here
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Theme(
+            data: ThemeData(
+              appBarTheme: const AppBarTheme(
+                iconTheme: IconThemeData(
+                  color: Colors.white,
+                ), // Set your desired color here
+              ),
             ),
-          ),
-          child: FolderVideos(
-            folderName: name,
-            index: index,
+            child: FolderVideos(
+              folderName: name,
+              index: index,
+            ),
           ),
         ),
       );

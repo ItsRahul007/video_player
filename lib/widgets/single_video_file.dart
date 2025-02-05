@@ -57,7 +57,7 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
         await _generateThumbnail(path, imageFile);
       }
     } catch (e) {
-      print('Error handling thumbnail: $e');
+      // print('Error handling thumbnail: $e');
     }
   }
 
@@ -78,27 +78,23 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
     }
   }
 
+  void playVideo() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlayVideo(
+            path: widget.path,
+            name: widget.name,
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0).r,
       child: InkWell(
-        onTap: () {
-          showDialog(
-              context: context,
-              builder: (context) => Theme(
-                    data: ThemeData(
-                      appBarTheme: const AppBarTheme(
-                        iconTheme: IconThemeData(
-                            color: Colors.white), // Set your desired color here
-                      ),
-                    ),
-                    child: PlayVideo(
-                      path: widget.path,
-                      name: widget.name,
-                    ),
-                  ));
-        },
+        onTap: () => playVideo(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +118,7 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
                     width: 10,
                   ),
                   SizedBox(
-                    width: 250.w,
+                    width: 245.w,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

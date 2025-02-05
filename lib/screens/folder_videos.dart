@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:local_video_player/constants/widget_list.dart';
@@ -23,22 +24,12 @@ class FolderVideos extends ConsumerStatefulWidget {
 class _FolderVideosState extends ConsumerState<FolderVideos> {
   @override
   void initState() {
-    _init();
     super.initState();
   }
 
-  void _init() async {
-    final permission =
-        await ref.read(permissionProvider.notifier).checkAudioPermissions();
-    if (!permission) {
-      final bool isPermissionGranted =
-          await ref.read(permissionProvider.notifier).manualRequestPermission();
-      if (isPermissionGranted) {
-        await ref.read(videoProvider.notifier).getAllVideos();
-      }
-    } else {
-      await ref.read(videoProvider.notifier).getAllVideos();
-    }
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -56,6 +47,9 @@ class _FolderVideosState extends ConsumerState<FolderVideos> {
 
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+        ),
         flexibleSpace: ComonBg(),
         elevation: 5,
         title: TextWidget(

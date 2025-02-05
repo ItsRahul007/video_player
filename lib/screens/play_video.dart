@@ -2,7 +2,8 @@ import 'dart:async'; // Add this import for Timer
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:local_video_player/widgets/video_controls/bottom_controls.dart';
+import 'package:local_video_player/widgets/video_controls/top_bar.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayVideo extends StatefulWidget {
@@ -103,195 +104,109 @@ class _PlayVideoState extends State<PlayVideo> {
     } else {
       await _controller.seekTo(newPosition);
     }
-    _startHideControlsTimer(); // Reset timer after skipping
-  }
-
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String minutes = twoDigits(duration.inMinutes.remainder(60));
-    String seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
+    _startHideControlsTimer();
   }
 
   Widget _buildTopBar() {
     if (!_showControls) return const SizedBox.shrink();
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.black.withOpacity(0.7),
-            Colors.transparent,
-          ],
-        ),
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white, size: 24.r),
-            onPressed: () => Navigator.pop(context),
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Text(
-              widget.name,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w500,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
+    return TopBar(name: widget.name);
   }
 
   Widget _buildBottomControls() {
     if (!_showControls) return const SizedBox.shrink();
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            Colors.black.withOpacity(0.7),
-            Colors.transparent,
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                _formatDuration(_currentPosition),
-                style: const TextStyle(color: Colors.white),
-              ),
-              Expanded(
-                child: Slider(
-                  value: _currentPosition.inMilliseconds.toDouble(),
-                  min: 0.0,
-                  max: _controller.value.duration.inMilliseconds.toDouble(),
-                  onChangeStart: (value) {
-                    _isDraggingSlider = true;
-                    _hideControlsTimer?.cancel(); // Don't hide while dragging
-                  },
-                  onChangeEnd: (value) {
-                    _isDraggingSlider = false;
-                    _startHideControlsTimer(); // Start timer after drag ends
-                  },
-                  onChanged: (value) {
-                    _controller.seekTo(Duration(milliseconds: value.toInt()));
-                    setState(() {
-                      _currentPosition = Duration(milliseconds: value.toInt());
-                    });
-                  },
-                ),
-              ),
-              Text(
-                _formatDuration(_controller.value.duration),
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-          IconButton(
-            icon: Icon(
-              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
-              size: 32.r,
-            ),
-            onPressed: () {
-              setState(() {
-                _controller.value.isPlaying
-                    ? _controller.pause()
-                    : _controller.play();
-              });
-              _startHideControlsTimer(); // Reset timer after play/pause
-            },
-          ),
-        ],
-      ),
+    return VideoBottomControls(
+      controller: _controller,
+      currentPosition: _currentPosition,
+      showControls: _showControls,
+      onPlayPausePressed: (isPlaying) {
+        setState(() {
+          isPlaying ? _controller.pause() : _controller.play();
+        });
+        _startHideControlsTimer();
+      },
+      onSliderChanged: (value) {
+        _controller.seekTo(Duration(milliseconds: value.toInt()));
+        setState(() {
+          _currentPosition = Duration(milliseconds: value.toInt());
+        });
+      },
+      onSliderChangeStart: (value) {
+        _isDraggingSlider = true;
+        _hideControlsTimer?.cancel();
+      },
+      onSliderChangeEnd: (value) {
+        _isDraggingSlider = false;
+        _startHideControlsTimer();
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: Colors.black,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          body: Container(
-            color: Colors.black,
-            child: FutureBuilder(
-              future: _initializeVideoPlayerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    _isControllerInitialized) {
-                  return Stack(
-                    children: [
-                      // Video player with gesture detection
-                      GestureDetector(
-                        onTap: _handleControlsVisibility,
-                        onDoubleTapDown: (details) {
-                          final screenWidth = MediaQuery.of(context).size.width;
-                          final dx = details.globalPosition.dx;
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Container(
+        color: Colors.black,
+        height: double.infinity,
+        width: double.infinity,
+        child: FutureBuilder(
+          future: _initializeVideoPlayerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                _isControllerInitialized) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Video player with gesture detection
+                  GestureDetector(
+                    onTap: _handleControlsVisibility,
+                    onDoubleTapDown: (details) {
+                      final screenWidth = MediaQuery.of(context).size.width;
+                      final dx = details.globalPosition.dx;
 
-                          if (dx < screenWidth / 3) {
-                            _skipVideo(const Duration(seconds: -10));
-                          } else if (dx > (screenWidth * 2 / 3)) {
-                            _skipVideo(const Duration(seconds: 10));
-                          } else {
-                            setState(() {
-                              _controller.value.isPlaying
-                                  ? _controller.pause()
-                                  : _controller.play();
-                            });
-                            _startHideControlsTimer();
-                          }
-                        },
-                        child: Center(
-                          child: AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child: VideoPlayer(_controller),
-                          ),
-                        ),
+                      if (dx < screenWidth / 3) {
+                        _skipVideo(const Duration(seconds: -10));
+                      } else if (dx > (screenWidth * 2 / 3)) {
+                        _skipVideo(const Duration(seconds: 10));
+                      } else {
+                        setState(() {
+                          _controller.value.isPlaying
+                              ? _controller.pause()
+                              : _controller.play();
+                        });
+                        _startHideControlsTimer();
+                      }
+                    },
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
                       ),
-                      // Top bar with title
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: _buildTopBar(),
-                      ),
-                      // Bottom controls
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: _buildBottomControls(),
-                      ),
-                    ],
-                  );
-                }
-                return const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                );
-              },
-            ),
-          ),
+                    ),
+                  ),
+                  // Top bar with title
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: _buildTopBar(),
+                  ),
+                  // Bottom controls
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: _buildBottomControls(),
+                  ),
+                ],
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          },
         ),
       ),
     );

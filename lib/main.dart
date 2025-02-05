@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
                 textTheme: const TextTheme(
                   bodyMedium: TextStyle(
-                      color: Colors.white), // Set default text color to white
+                    color: Colors.white,
+                  ), // Set default text color to white
                 ),
                 appBarTheme: AppBarTheme(
                   backgroundColor: Colors.transparent,
