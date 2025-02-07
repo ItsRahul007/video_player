@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,12 +8,15 @@ class VideoFile {
   final String path;
   final String name;
   final DateTime modified;
+  //? like 30MB or 1GB
+  final String fileSize;
 
   VideoFile({
     required this.file,
     required this.path,
     required this.name,
     required this.modified,
+    required this.fileSize,
   });
 
   // Add equality operator to help prevent duplicates
@@ -120,11 +124,14 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
               path.endsWith('.mkv') ||
               path.endsWith('.mov') ||
               path.endsWith('.avi')) {
+            final size = _formatBytes(entity.lengthSync(), 2);
+
             VideoFile video = VideoFile(
               file: entity,
               path: path,
               name: path.split("/").last,
               modified: entity.lastModifiedSync(),
+              fileSize: size,
             );
 
             String directoryPath = entity.parent.path;
@@ -143,6 +150,23 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
       }
     } catch (e) {
       debugPrint('Skipping directory: ${directory.path}');
+    }
+  }
+
+  String _formatBytes(int bytes, int decimals) {
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    var i = (log(bytes) / log(1024)).floor();
+    return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
+  }
+
+  void deleteVideo(String path) {
+    final file = File(path);
+    if (file.existsSync()) {
+      file.deleteSync();
+      getAllVideos();
+    } else {
+      debugPrint("File not found");
     }
   }
 }

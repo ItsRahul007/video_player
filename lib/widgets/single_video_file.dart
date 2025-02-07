@@ -3,21 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_thumbnail_video/index.dart';
+import 'package:local_video_player/providers/video_provider.dart';
 import 'package:local_video_player/screens/play_video.dart';
+import 'package:local_video_player/widgets/menu_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:local_video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
 class SingleVideoFile extends StatefulWidget {
-  final String name;
+  final VideoFile video;
   final String date;
-  final String path;
 
   const SingleVideoFile({
     super.key,
-    required this.name,
+    required this.video,
     required this.date,
-    required this.path,
   });
 
   @override
@@ -30,14 +30,14 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
   @override
   void initState() {
     super.initState();
-    _getVideoThumbnail(widget.path);
+    _getVideoThumbnail(widget.video.path);
   }
 
   Future<void> _getVideoThumbnail(String path) async {
     try {
       final Directory appDir = await getTemporaryDirectory();
       final String imagePath =
-          "${appDir.path}/${widget.name.split(" ").join("_")}.jpeg";
+          "${appDir.path}/${widget.video.name.split(" ").join("_")}.jpeg";
       final File imageFile = File(imagePath);
 
       //! Check if file exists and is a valid image
@@ -83,8 +83,8 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
         context,
         MaterialPageRoute(
           builder: (context) => PlayVideo(
-            path: widget.path,
-            name: widget.name,
+            path: widget.video.path,
+            name: widget.video.name,
           ),
         ));
   }
@@ -92,7 +92,7 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0).r,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8).r,
       child: InkWell(
         onTap: () => playVideo(),
         child: Row(
@@ -123,7 +123,7 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextWidget(
-                            text: widget.name,
+                            text: widget.video.name,
                             fontSize: 14.sp,
                             maxLines: 2,
                           ),
@@ -146,13 +146,9 @@ class _SingleVideoFileState extends State<SingleVideoFile> {
                 ],
               ),
             ),
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.more_vert,
-                  size: 20.sp,
-                  color: Colors.white,
-                ))
+            MenuButton(
+              video: widget.video,
+            ),
           ],
         ),
       ),

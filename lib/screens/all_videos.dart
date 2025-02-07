@@ -65,8 +65,7 @@ class _AllVideosState extends ConsumerState<AllVideos> {
       itemBuilder: (context, index) => SingleVideoFile(
         date:
             "${videos.videoFiles[index].modified.day} ${monthAbbreviations[videos.videoFiles[index].modified.month - 1]}",
-        name: videos.videoFiles[index].name,
-        path: videos.videoFiles[index].path,
+        video: videos.videoFiles[index],
       ),
       itemCount: videos.videoFiles.length,
     );

@@ -110,7 +110,7 @@ class _PlayVideoState extends State<PlayVideo> {
   Widget _buildTopBar() {
     if (!_showControls) return const SizedBox.shrink();
 
-    return TopBar(name: widget.name);
+    return TopBar(name: widget.name, isScreenRoated: isLandScape);
   }
 
   Widget _buildBottomControls() {

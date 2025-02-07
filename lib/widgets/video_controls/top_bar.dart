@@ -5,14 +5,17 @@ class TopBar extends StatelessWidget {
   const TopBar({
     super.key,
     required this.name,
+    required this.isScreenRoated,
   });
 
   final String name;
+  final bool isScreenRoated;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(
+          horizontal: 16.w, vertical: isScreenRoated ? 8.h : 30.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -26,7 +29,11 @@ class TopBar extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white, size: 10.sp),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: isScreenRoated ? 10.sp : 18.sp,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           SizedBox(width: 8.w),
@@ -35,7 +42,7 @@ class TopBar extends StatelessWidget {
               name,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 8.sp,
+                fontSize: isScreenRoated ? 8.sp : 18.sp,
                 fontWeight: FontWeight.w500,
               ),
               maxLines: 1,

@@ -65,8 +65,7 @@ class _FolderVideosState extends ConsumerState<FolderVideos> {
                 videos.videoFolders[widget.index].videoFiles[index];
 
             return SingleVideoFile(
-              name: video.name,
-              path: video.path,
+              video: video,
               date:
                   "${video.modified.day} ${monthAbbreviations[video.modified.month - 1]}",
             );

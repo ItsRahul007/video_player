@@ -22,7 +22,7 @@ class VideoBottomControls extends StatelessWidget {
     required this.onSliderChangeEnd,
   });
 
-  String formatDuration(Duration duration) {
+  String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String minutes = twoDigits(duration.inMinutes.remainder(60));
     String seconds = twoDigits(duration.inSeconds.remainder(60));
@@ -51,7 +51,7 @@ class VideoBottomControls extends StatelessWidget {
           Row(
             children: [
               Text(
-                formatDuration(currentPosition),
+                _formatDuration(currentPosition),
                 style: const TextStyle(color: Colors.white),
               ),
               Expanded(
@@ -65,7 +65,7 @@ class VideoBottomControls extends StatelessWidget {
                 ),
               ),
               Text(
-                formatDuration(controller.value.duration),
+                _formatDuration(controller.value.duration),
                 style: const TextStyle(color: Colors.white),
               ),
             ],

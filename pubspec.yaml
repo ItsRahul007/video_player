@@ -20,6 +20,7 @@ dependencies:
   get_thumbnail_video: ^0.7.3
   path_provider: ^2.1.5
   video_player: ^2.9.2
+  popover: ^0.3.1
 
 dev_dependencies:
   flutter_test:
@@ -35,3 +36,5 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
