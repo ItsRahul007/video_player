@@ -5,6 +5,7 @@ import 'package:local_video_player/constants/colors.dart';
 import 'package:local_video_player/providers/video_provider.dart';
 import 'package:local_video_player/widgets/text.dart';
 import 'package:local_video_player/widgets/video_info.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DeleteVideo extends ConsumerStatefulWidget {
   const DeleteVideo({
@@ -131,12 +132,21 @@ class ShowVideoInfo extends StatelessWidget {
 }
 
 class ShareVideo extends StatelessWidget {
-  const ShareVideo({super.key});
+  const ShareVideo({
+    super.key,
+    required this.path,
+  });
+  final String path;
 
   @override
   Widget build(BuildContext context) {
+    void shareFile() {
+      Navigator.pop(context);
+      Share.shareXFiles([XFile(path)]);
+    }
+
     return IconButton(
-      onPressed: () {},
+      onPressed: shareFile,
       icon: Icon(
         Icons.share,
         color: Colors.blue,

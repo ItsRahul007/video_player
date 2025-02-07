@@ -10,7 +10,9 @@ class Options extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> menuList = [
-      ShareVideo(),
+      ShareVideo(
+        path: video.path,
+      ),
       ShowVideoInfo(
         path: video.path,
         name: video.name,
