@@ -41,10 +41,7 @@ class _AllVideosState extends ConsumerState<AllVideos> {
     final videos = ref.watch(videoProvider);
 
     if (permission.isLoading || videos.isLoading) {
-      return Center(
-          child: CircularProgressIndicator(
-        color: Colors.white,
-      ));
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (videos.videoFiles.isEmpty) {

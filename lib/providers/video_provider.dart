@@ -161,6 +161,7 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
   }
 
   void deleteVideo(String path) {
+    state = state.copyWith(isLoading: true);
     final file = File(path);
     if (file.existsSync()) {
       file.deleteSync();

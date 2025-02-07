@@ -15,13 +15,15 @@ class DeleteVideo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final setVideoProvider = ref.read(videoProvider.notifier);
+
     void onConfirmDelete() {
+      setVideoProvider.deleteVideo(path);
       Navigator.pop(context);
-      ref.read(videoProvider.notifier).deleteVideo(path);
+      Navigator.pop(context);
     }
 
     void showAleartDialog() {
-      Navigator.pop(context);
       showDialog(
         context: context,
         builder: (context) {
