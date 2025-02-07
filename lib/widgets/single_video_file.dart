@@ -9,8 +9,9 @@ import 'package:local_video_player/widgets/menu_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:local_video_player/widgets/text.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SingleVideoFile extends StatefulWidget {
+class SingleVideoFile extends ConsumerStatefulWidget {
   final VideoFile video;
   final String date;
 
@@ -21,10 +22,10 @@ class SingleVideoFile extends StatefulWidget {
   });
 
   @override
-  State<SingleVideoFile> createState() => _SingleVideoFileState();
+  ConsumerState<SingleVideoFile> createState() => _SingleVideoFileState();
 }
 
-class _SingleVideoFileState extends State<SingleVideoFile> {
+class _SingleVideoFileState extends ConsumerState<SingleVideoFile> {
   File? myThumbnail;
 
   @override

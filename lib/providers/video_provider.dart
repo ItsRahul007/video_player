@@ -44,6 +44,7 @@ class Folders {
 
 class VideoProviderState {
   final bool isLoading;
+  final bool isDeletingVideo;
   final List<VideoFile> videoFiles;
   final List<Folders> videoFolders;
 
@@ -51,15 +52,18 @@ class VideoProviderState {
     required this.isLoading,
     required this.videoFiles,
     required this.videoFolders,
+    this.isDeletingVideo = false,
   });
 
   VideoProviderState copyWith({
     bool? isLoading,
+    bool? isDeletingVideo,
     List<VideoFile>? videoFiles,
     List<Folders>? videoFolders,
   }) {
     return VideoProviderState(
       isLoading: isLoading ?? this.isLoading,
+      isDeletingVideo: isDeletingVideo ?? this.isDeletingVideo,
       videoFiles: videoFiles ?? this.videoFiles,
       videoFolders: videoFolders ?? this.videoFolders,
     );
@@ -160,14 +164,41 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
     return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
   }
 
-  void deleteVideo(String path) {
-    state = state.copyWith(isLoading: true);
-    final file = File(path);
-    if (file.existsSync()) {
-      file.deleteSync();
-      getAllVideos();
-    } else {
-      debugPrint("File not found");
+  Future<void> deleteVideo(String path) async {
+    try {
+      state = state.copyWith(isLoading: true, isDeletingVideo: true);
+      final file = File(path);
+      if (file.existsSync()) {
+        file.deleteSync();
+
+        // Update the state by removing the deleted video
+        final updatedFiles =
+            state.videoFiles.where((video) => video.path != path).toList();
+        final updatedFolders = state.videoFolders.map((folder) {
+          return Folders(
+            folderName: folder.folderName,
+            folderPath: folder.folderPath,
+            videoFiles:
+                folder.videoFiles.where((video) => video.path != path).toList(),
+          );
+        }).toList();
+
+        state = state.copyWith(
+          videoFiles: updatedFiles,
+          videoFolders: updatedFolders,
+          isLoading: false,
+          isDeletingVideo: false,
+        );
+
+        // Refresh the full list after state update
+        await getAllVideos();
+      } else {
+        debugPrint("File not found");
+        state = state.copyWith(isLoading: false, isDeletingVideo: false);
+      }
+    } catch (e) {
+      debugPrint("Error deleting video: $e");
+      state = state.copyWith(isLoading: false, isDeletingVideo: false);
     }
   }
 }

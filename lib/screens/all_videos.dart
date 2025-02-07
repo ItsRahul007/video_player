@@ -40,31 +40,39 @@ class _AllVideosState extends ConsumerState<AllVideos> {
     final permission = ref.watch(permissionProvider);
     final videos = ref.watch(videoProvider);
 
-    if (permission.isLoading || videos.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    //! Adding a key to force rebuild when the folder list changes
+    return KeyedSubtree(
+      key: ValueKey(videos.videoFiles.length),
+      child: Builder(builder: (context) {
+        if (permission.isLoading || videos.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (videos.videoFiles.isEmpty) {
-      return NoVideos();
-    }
+        if (videos.videoFiles.isEmpty) {
+          return const NoVideos();
+        }
 
-    if (!permission.havePermission) {
-      return Center(
-        child: TextButton(
-            onPressed: () {
-              ref.read(permissionProvider.notifier).manualRequestPermission();
-            },
-            child: TextWidget(text: "Give Permission")),
-      );
-    }
+        if (!permission.havePermission) {
+          return Center(
+            child: TextButton(
+                onPressed: () {
+                  ref
+                      .read(permissionProvider.notifier)
+                      .manualRequestPermission();
+                },
+                child: TextWidget(text: "Give Permission")),
+          );
+        }
 
-    return ListView.builder(
-      itemBuilder: (context, index) => SingleVideoFile(
-        date:
-            "${videos.videoFiles[index].modified.day} ${monthAbbreviations[videos.videoFiles[index].modified.month - 1]}",
-        video: videos.videoFiles[index],
-      ),
-      itemCount: videos.videoFiles.length,
+        return ListView.builder(
+          itemBuilder: (context, index) => SingleVideoFile(
+            date:
+                "${videos.videoFiles[index].modified.day} ${monthAbbreviations[videos.videoFiles[index].modified.month - 1]}",
+            video: videos.videoFiles[index],
+          ),
+          itemCount: videos.videoFiles.length,
+        );
+      }),
     );
   }
 

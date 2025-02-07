@@ -6,7 +6,7 @@ import 'package:local_video_player/providers/video_provider.dart';
 import 'package:local_video_player/widgets/text.dart';
 import 'package:local_video_player/widgets/video_info.dart';
 
-class DeleteVideo extends ConsumerWidget {
+class DeleteVideo extends ConsumerStatefulWidget {
   const DeleteVideo({
     super.key,
     required this.path,
@@ -14,47 +14,70 @@ class DeleteVideo extends ConsumerWidget {
   final String path;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final setVideoProvider = ref.read(videoProvider.notifier);
+  ConsumerState<DeleteVideo> createState() => _DeleteVideoState();
+}
 
-    void onConfirmDelete() {
-      setVideoProvider.deleteVideo(path);
-      Navigator.pop(context);
-      Navigator.pop(context);
+class _DeleteVideoState extends ConsumerState<DeleteVideo> {
+  @override
+  Widget build(BuildContext context) {
+    final setVideoProvider = ref.read(videoProvider.notifier);
+    final isDeletingVideo = ref.watch(videoProvider).isDeletingVideo;
+
+    void onConfirmDelete() async {
+      await setVideoProvider.deleteVideo(widget.path);
+      if (context.mounted) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
     }
 
-    void showAleartDialog() {
+    void showAlertDialog() {
       showDialog(
         context: context,
+        barrierDismissible: !isDeletingVideo,
         builder: (context) {
-          return AlertDialog(
-            backgroundColor: bgSecondColor,
-            title: TextWidget(
-              text: "Are you sure you want to delete this video?",
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              maxLines: 2,
-            ),
-            actions: [
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.red),
-                ),
-                onPressed: onConfirmDelete,
-                child: TextWidget(text: "Delete"),
+          return WillPopScope(
+            onWillPop: () async => !isDeletingVideo,
+            child: AlertDialog(
+              backgroundColor: bgSecondColor,
+              title: TextWidget(
+                text: "Are you sure you want to delete this video?",
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                maxLines: 2,
               ),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: TextWidget(text: "Cancel", color: Colors.black),
-              )
-            ],
+              content: isDeletingVideo
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : null,
+              actions: isDeletingVideo
+                  ? null // No buttons while deleting
+                  : [
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.red),
+                        ),
+                        onPressed: onConfirmDelete,
+                        child: TextWidget(text: "Delete"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: TextWidget(text: "Cancel", color: Colors.black),
+                      )
+                    ],
+            ),
           );
         },
       );
     }
 
     return IconButton(
-        onPressed: showAleartDialog,
+        onPressed: showAlertDialog,
         icon: Icon(
           Icons.delete,
           color: Colors.red,

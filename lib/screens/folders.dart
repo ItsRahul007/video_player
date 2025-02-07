@@ -12,10 +12,11 @@ class Folders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final permission = ref.watch(permissionProvider);
-    final videos = ref.read(videoProvider);
+    final videos =
+        ref.watch(videoProvider); // Changed from ref.read to ref.watch
 
     if (permission.isLoading || videos.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (!permission.havePermission) {
@@ -28,13 +29,17 @@ class Folders extends ConsumerWidget {
       );
     }
 
-    return ListView.builder(
-        itemBuilder: (context, index) => _folders(
-            context,
-            videos.videoFolders[index].folderName,
-            videos.videoFolders[index].videoFiles.length,
-            index),
-        itemCount: videos.videoFolders.length);
+    //! Adding a key to force rebuild when the folder list changes
+    return KeyedSubtree(
+      key: ValueKey(videos.videoFolders.length),
+      child: ListView.builder(
+          itemBuilder: (context, index) => _folders(
+              context,
+              videos.videoFolders[index].folderName,
+              videos.videoFolders[index].videoFiles.length,
+              index),
+          itemCount: videos.videoFolders.length),
+    );
   }
 
   Widget _folders(
@@ -51,7 +56,7 @@ class Folders extends ConsumerWidget {
               appBarTheme: const AppBarTheme(
                 iconTheme: IconThemeData(
                   color: Colors.white,
-                ), // Set your desired color here
+                ),
               ),
             ),
             child: FolderVideos(
@@ -69,7 +74,6 @@ class Folders extends ConsumerWidget {
         onTap: onFolderClick,
         child: Row(
           children: [
-            //? the icon
             Icon(
               Icons.folder,
               size: 60.sp,
@@ -78,7 +82,6 @@ class Folders extends ConsumerWidget {
             SizedBox(
               width: 10.w,
             ),
-            //?
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
