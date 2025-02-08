@@ -125,6 +125,8 @@ class VideoProvider extends StateNotifier<VideoProviderState> {
           if (processedPaths.contains(path)) continue;
 
           if (path.endsWith('.mp4') ||
+              path.endsWith('.3gp') ||
+              path.endsWith('.webm') ||
               path.endsWith('.mkv') ||
               path.endsWith('.mov') ||
               path.endsWith('.avi')) {

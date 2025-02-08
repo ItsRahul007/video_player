@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:local_video_player/constants/widget_list.dart';
 import 'package:local_video_player/widgets/comon_bg.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TopBar extends StatelessWidget {
@@ -6,10 +7,12 @@ class TopBar extends StatelessWidget {
     super.key,
     required this.name,
     required this.isScreenRoated,
+    this.isContent = false,
   });
 
   final String name;
   final bool isScreenRoated;
+  final bool isContent;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,14 @@ class TopBar extends StatelessWidget {
               color: Colors.white,
               size: isScreenRoated ? 10.sp : 18.sp,
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              //! check why is this not working perfectly
+              if (isContent) {
+                SystemNavigator.pop();
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
           ),
           SizedBox(width: 8.w),
           Expanded(

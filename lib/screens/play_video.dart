@@ -11,10 +11,12 @@ class PlayVideo extends StatefulWidget {
     super.key,
     required this.path,
     required this.name,
+    this.isContent = false,
   });
 
   final String path;
   final String name;
+  final bool isContent;
 
   @override
   State<PlayVideo> createState() => _PlayVideoState();
@@ -61,7 +63,11 @@ class _PlayVideoState extends State<PlayVideo> {
   }
 
   Future<void> _initializePlayer() async {
-    _controller = VideoPlayerController.file(File(widget.path));
+    if (widget.isContent) {
+      _controller = VideoPlayerController.contentUri(Uri.parse(widget.path));
+    } else {
+      _controller = VideoPlayerController.file(File(widget.path));
+    }
     _initializeVideoPlayerFuture = _controller.initialize().then((_) {
       _setOrientation(_controller.value.aspectRatio);
       if (mounted) {
@@ -110,7 +116,11 @@ class _PlayVideoState extends State<PlayVideo> {
   Widget _buildTopBar() {
     if (!_showControls) return const SizedBox.shrink();
 
-    return TopBar(name: widget.name, isScreenRoated: isLandScape);
+    return TopBar(
+      name: widget.name,
+      isScreenRoated: isLandScape,
+      isContent: widget.isContent,
+    );
   }
 
   Widget _buildBottomControls() {
