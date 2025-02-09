@@ -6,6 +6,7 @@ class VideoBottomControls extends StatelessWidget {
   final VideoPlayerController controller;
   final Duration currentPosition;
   final bool showControls;
+  final bool isLandScape;
   final Function(bool) onPlayPausePressed;
   final Function(double) onSliderChanged;
   final Function(double) onSliderChangeStart;
@@ -16,6 +17,7 @@ class VideoBottomControls extends StatelessWidget {
     required this.controller,
     required this.currentPosition,
     required this.showControls,
+    required this.isLandScape,
     required this.onPlayPausePressed,
     required this.onSliderChanged,
     required this.onSliderChangeStart,
@@ -32,6 +34,7 @@ class VideoBottomControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!showControls) return const SizedBox.shrink();
+    double iconSize = isLandScape ? 18.sp : 34.sp;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -70,13 +73,38 @@ class VideoBottomControls extends StatelessWidget {
               ),
             ],
           ),
-          IconButton(
-            icon: Icon(
-              controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
-              size: 32.r,
-            ),
-            onPressed: () => onPlayPausePressed(controller.value.isPlaying),
+          //? pause, next, and previous buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.skip_previous,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+                onPressed: () => onPlayPausePressed(controller.value.isPlaying),
+              ),
+              SizedBox(width: 16.w),
+              IconButton(
+                icon: Icon(
+                  controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+                onPressed: () => onPlayPausePressed(controller.value.isPlaying),
+              ),
+              SizedBox(width: 16.w),
+              IconButton(
+                icon: Icon(
+                  Icons.skip_next,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+                onPressed: () => onPlayPausePressed(controller.value.isPlaying),
+              ),
+            ],
           ),
         ],
       ),

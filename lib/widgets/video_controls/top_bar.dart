@@ -35,10 +35,9 @@ class TopBar extends StatelessWidget {
             icon: Icon(
               Icons.arrow_back,
               color: Colors.white,
-              size: isScreenRoated ? 10.sp : 18.sp,
+              size: isScreenRoated ? 14.sp : 24.sp,
             ),
             onPressed: () {
-              //! check why is this not working perfectly
               if (isContent) {
                 SystemNavigator.pop();
               } else {

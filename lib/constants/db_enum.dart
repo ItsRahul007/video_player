@@ -1,0 +1,4 @@
+enum DBNames {
+  volume,
+  screenBrightness,
+}
