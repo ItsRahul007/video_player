@@ -9,7 +9,7 @@ class VideoDB {
   double volume = 0.4667;
   double screenBrightness = 0.5009506344795227;
 
-  SharedPreferences? _db;
+  late SharedPreferences? _db;
 
   Future<void> init() async {
     _db = await SharedPreferences.getInstance();
@@ -43,5 +43,29 @@ class VideoDB {
     _db?.setDouble(DBNames.volume.name, volume ?? this.volume);
     screenBrightness = brightness ?? screenBrightness;
     this.volume = volume ?? this.volume;
+  }
+
+  void setVideoPosition(String path, Duration position) {
+    String modifiedPath = path.replaceAll('/', '_').split(" ").join("_");
+    _db?.setInt(modifiedPath, position.inSeconds);
+  }
+
+  Future<Duration> getVideoPosition(String path) async {
+    if (_db != null) {
+      return getVideoPositionFromDB(path);
+    } else {
+      await init();
+      return getVideoPositionFromDB(path);
+    }
+  }
+
+  Duration getVideoPositionFromDB(String path) {
+    String modifiedPath = path.replaceAll('/', '_').split(" ").join("_");
+    int? savedPosition = _db?.getInt(modifiedPath);
+    if (savedPosition == null) {
+      return Duration.zero;
+    } else {
+      return Duration(seconds: savedPosition);
+    }
   }
 }

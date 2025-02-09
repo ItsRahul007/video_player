@@ -66,12 +66,12 @@ class _PlayVideoState extends ConsumerState<PlayVideo> {
       _currentVolume = VideoDB.instance.volume;
     });
 
+    //! don't show the system volume increasing/decreasing UI
+    VolumeController.instance.showSystemUI = false;
+
     await ScreenBrightness.instance
         .setApplicationScreenBrightness(_currentBrightness);
     await VolumeController.instance.setVolume(_currentVolume);
-
-    //! don't show the system volume increasing/decreasing UI
-    VolumeController.instance.showSystemUI = false;
   }
 
   void _startHideControlsTimer() {
@@ -93,12 +93,18 @@ class _PlayVideoState extends ConsumerState<PlayVideo> {
     } else {
       _controller = VideoPlayerController.file(File(widget.path));
     }
-    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
+    _initializeVideoPlayerFuture = _controller.initialize().then((_) async {
       _setOrientation(_controller.value.aspectRatio);
       if (mounted) {
         setState(() {
           _isControllerInitialized = true;
         });
+        final savedVideoPosition =
+            await VideoDB.instance.getVideoPosition(widget.path);
+        debugPrint("video saved start at ${savedVideoPosition.inSeconds}");
+
+        _controller.seekTo(savedVideoPosition);
+
         _controller.play();
       }
     });
@@ -457,18 +463,31 @@ class _PlayVideoState extends ConsumerState<PlayVideo> {
 
   @override
   void dispose() {
+    //? saving the video informations
+    VideoDB.instance.setBrightnessAndVolume(
+      brightness: _currentBrightness,
+      volume: _currentVolume,
+    );
+    if (_currentPosition.inSeconds != 0 &&
+        _currentPosition.inSeconds !=
+            (_controller.value.duration.inSeconds - 5)) {
+      debugPrint("video saved at ${_currentPosition.inSeconds}");
+      VideoDB.instance.setVideoPosition(widget.path, _currentPosition);
+    }
+
+    //? disposing the controller
     _hideControlsTimer?.cancel();
     _controller.removeListener(_controllerListener);
     _controller.dispose();
+
+    //? resetting the landscape to normal
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: SystemUiOverlay.values,
     );
-    VideoDB.instance.setBrightnessAndVolume(
-      brightness: _currentBrightness,
-      volume: _currentVolume,
-    );
+
+    //? resetting the brightness and showing the system volume UI
     VolumeController.instance.showSystemUI = true;
     ScreenBrightness.instance.resetApplicationScreenBrightness();
     super.dispose();
