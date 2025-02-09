@@ -1,10 +1,10 @@
 import 'package:local_video_player/constants/db_enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ToDoDB {
-  static final ToDoDB instance = ToDoDB._init();
+class VideoDB {
+  static final VideoDB instance = VideoDB._init();
 
-  ToDoDB._init();
+  VideoDB._init();
 
   double volume = 0.4667;
   double screenBrightness = 0.5009506344795227;

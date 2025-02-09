@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:local_video_player/providers/video_setting.dart';
+import 'package:local_video_player/database/video_db.dart';
 import 'package:local_video_player/widgets/video_controls/bottom_controls.dart';
 import 'package:local_video_player/widgets/video_controls/top_bar.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -27,8 +27,11 @@ class PlayVideo extends ConsumerStatefulWidget {
 }
 
 class _PlayVideoState extends ConsumerState<PlayVideo> {
+  //? variables for tracking video player
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
+
+  //? variables for normal video features
   bool isLandScape = false;
   bool _showControls = true;
   bool _isControllerInitialized = false;
@@ -55,20 +58,20 @@ class _PlayVideoState extends ConsumerState<PlayVideo> {
     _initializePlayer();
     _startHideControlsTimer();
     _initializeVolumeBrightness();
-
-    // Initialize volume controller
-    VolumeController.instance.showSystemUI = false;
   }
 
   Future<void> _initializeVolumeBrightness() async {
     setState(() {
-      _currentBrightness = ToDoDB.instance.screenBrightness;
-      _currentVolume = ToDoDB.instance.volume;
+      _currentBrightness = VideoDB.instance.screenBrightness;
+      _currentVolume = VideoDB.instance.volume;
     });
 
     await ScreenBrightness.instance
         .setApplicationScreenBrightness(_currentBrightness);
     await VolumeController.instance.setVolume(_currentVolume);
+
+    //! don't show the system volume increasing/decreasing UI
+    VolumeController.instance.showSystemUI = false;
   }
 
   void _startHideControlsTimer() {
@@ -462,7 +465,7 @@ class _PlayVideoState extends ConsumerState<PlayVideo> {
       SystemUiMode.manual,
       overlays: SystemUiOverlay.values,
     );
-    ToDoDB.instance.setBrightnessAndVolume(
+    VideoDB.instance.setBrightnessAndVolume(
       brightness: _currentBrightness,
       volume: _currentVolume,
     );
