@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:local_video_player/constants/colors.dart';
 import 'package:local_video_player/providers/video_provider.dart';
 import 'package:local_video_player/widgets/text.dart';
-import 'package:local_video_player/widgets/video_info.dart';
+import 'package:local_video_player/screens/video_info.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DeleteVideo extends ConsumerStatefulWidget {
