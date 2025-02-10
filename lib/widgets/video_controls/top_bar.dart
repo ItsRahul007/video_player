@@ -8,11 +8,13 @@ class TopBar extends StatelessWidget {
     required this.name,
     required this.isScreenRoated,
     this.isContent = false,
+    required this.onDispose,
   });
 
   final String name;
   final bool isScreenRoated;
   final bool isContent;
+  final Function onDispose;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class TopBar extends StatelessWidget {
             ),
             onPressed: () {
               if (isContent) {
+                onDispose();
                 SystemNavigator.pop();
               } else {
                 Navigator.of(context).pop();

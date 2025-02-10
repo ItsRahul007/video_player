@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Intent;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:local_video_player/screens/home.dart';
 import 'package:local_video_player/screens/play_video.dart';
-import 'package:receive_intent/receive_intent.dart' as receive_intent;
+import 'package:receive_intent/receive_intent.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -29,15 +29,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _handleIncomingIntent() async {
-    final receivedIntent =
-        await receive_intent.ReceiveIntent.getInitialIntent();
+    final receivedIntent = await ReceiveIntent.getInitialIntent();
+    if (!mounted) return;
+
     if (receivedIntent?.data != null) {
       openedFromIntent = true; // Set flag when opened from intent
       _handleVideo(receivedIntent!.data!);
     }
 
-    receive_intent.ReceiveIntent.receivedIntentStream
-        .listen((receive_intent.Intent? intent) {
+    ReceiveIntent.receivedIntentStream.listen((Intent? intent) {
       if (intent?.data != null) {
         openedFromIntent = true; // Set flag when opened from intent
         _handleVideo(intent!.data!);

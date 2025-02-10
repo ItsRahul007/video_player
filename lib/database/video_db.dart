@@ -9,7 +9,7 @@ class VideoDB {
   double volume = 0.4667;
   double screenBrightness = 0.5009506344795227;
 
-  late SharedPreferences? _db;
+  SharedPreferences? _db;
 
   Future<void> init() async {
     _db = await SharedPreferences.getInstance();
